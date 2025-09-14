@@ -397,18 +397,12 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                           <Package className="w-5 h-5 text-white" />
                         </div>
                         <div className="ml-4">
-                          {editingProduct === product.id ? (
-                            <input
-                              type="text"
-                              value={product.name}
-                              onChange={(e) => updateProduct(product.id, 'name', e.target.value)}
-                              className="text-sm font-medium text-gray-900 bg-transparent border-b border-gray-300 focus:border-blue-500 outline-none"
-                              onBlur={() => setEditingProduct(null)}
-                              onKeyPress={(e) => e.key === 'Enter' && setEditingProduct(null)}
-                            />
-                          ) : (
-                            <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                          )}
+                          <input
+                            type="text"
+                            value={product.name}
+                            onChange={(e) => updateProduct(product.id, 'name', e.target.value)}
+                            className="text-sm font-medium text-gray-900 bg-transparent border-b border-gray-200 hover:border-blue-300 focus:border-blue-500 outline-none w-full"
+                          />
                           {product.sku && <div className="text-sm text-gray-500">SKU: {product.sku}</div>}
                         </div>
                       </div>
@@ -418,7 +412,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                         type="text"
                         value={product.category}
                         onChange={(e) => updateProduct(product.id, 'category', e.target.value)}
-                        className="text-sm text-gray-900 bg-transparent border-b border-gray-200 focus:border-blue-500 outline-none w-full"
+                        className="text-sm text-gray-900 bg-transparent border-b border-gray-200 hover:border-blue-300 focus:border-blue-500 outline-none w-full"
                       />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -428,7 +422,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                           type="number"
                           value={product.costPrice}
                           onChange={(e) => updateProduct(product.id, 'costPrice', parseFloat(e.target.value) || 0)}
-                          className="text-sm font-medium text-gray-900 bg-transparent border-b border-gray-200 focus:border-orange-500 outline-none w-20"
+                          className="text-sm font-medium text-gray-900 bg-transparent border-b border-gray-200 hover:border-orange-300 focus:border-orange-500 outline-none w-20"
                           min="0"
                           step="0.01"
                         />
@@ -441,7 +435,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                           type="number"
                           value={product.marketPrice || ''}
                           onChange={(e) => updateProduct(product.id, 'marketPrice', parseFloat(e.target.value) || 0)}
-                          className="text-sm text-gray-600 bg-transparent border-b border-gray-200 focus:border-purple-500 outline-none w-20"
+                          className="text-sm text-gray-600 bg-transparent border-b border-gray-200 hover:border-purple-300 focus:border-purple-500 outline-none w-20"
                           min="0"
                           step="0.01"
                           placeholder="0"
@@ -455,7 +449,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                           type="number"
                           value={product.sellingPrice || ''}
                           onChange={(e) => updateProduct(product.id, 'sellingPrice', parseFloat(e.target.value) || 0)}
-                          className="text-sm font-medium text-green-600 bg-transparent border-b border-gray-200 focus:border-green-500 outline-none w-20"
+                          className="text-sm font-medium text-green-600 bg-transparent border-b border-gray-200 hover:border-green-300 focus:border-green-500 outline-none w-20"
                           min="0"
                           step="0.01"
                           placeholder={calculatePrice(product.costPrice).sellingPrice.toString()}
@@ -467,7 +461,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                         type="number"
                         value={product.quantity}
                         onChange={(e) => updateProduct(product.id, 'quantity', parseInt(e.target.value) || 1)}
-                        className="text-sm text-gray-900 bg-transparent border-b border-gray-200 focus:border-blue-500 outline-none w-16"
+                        className="text-sm text-gray-900 bg-transparent border-b border-gray-200 hover:border-blue-300 focus:border-blue-500 outline-none w-16"
                         min="1"
                       />
                     </td>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Brain, TrendingUp, Package, Target, Zap, Gift, Users, Calendar } from 'lucide-react';
+import { Brain, TrendingUp, Package, Target, Zap, Gift, Users, Calendar, CheckCircle } from 'lucide-react';
 import { Product, PricingConfig, AIRecommendation, BundleOffer } from '../types';
 import { generateAIRecommendations, generateAutoBundles, generatePsychologicalPrice, categoryBundleConfig } from '../utils/aiStrategies';
 
@@ -18,6 +18,7 @@ export const AIStrategies: React.FC<AIStrategiesProps> = ({
 }) => {
   const [recommendations, setRecommendations] = useState<AIRecommendation[]>([]);
   const [bundles, setBundles] = useState<BundleOffer[]>([]);
+  const [appliedRecommendations, setAppliedRecommendations] = useState<Set<number>>(new Set());
   const [activeStrategies, setActiveStrategies] = useState({
     psychological: true,
     bundles: true,
@@ -38,6 +39,30 @@ export const AIStrategies: React.FC<AIStrategiesProps> = ({
   const applyPsychologicalPricing = (productId: string, currentPrice: number) => {
     const newPrice = generatePsychologicalPrice(currentPrice);
     onUpdateProduct(productId, { sellingPrice: newPrice });
+  };
+
+  const applyRecommendation = (index: number, rec: AIRecommendation) => {
+    if (rec.type === 'pricing') {
+      // Find products that need psychological pricing
+      const productsToUpdate = products.filter(p => {
+        if (p.sellingPrice && p.sellingPrice > 0) {
+          const psychPrice = generatePsychologicalPrice(p.sellingPrice);
+          return Math.abs(p.sellingPrice - psychPrice) > 10;
+        }
+        return false;
+      });
+
+      // Apply psychological pricing to all relevant products
+      productsToUpdate.forEach(product => {
+        if (product.sellingPrice) {
+          const newPrice = generatePsychologicalPrice(product.sellingPrice);
+          onUpdateProduct(product.id, { sellingPrice: newPrice });
+        }
+      });
+    }
+
+    // Mark as applied
+    setAppliedRecommendations(prev => new Set([...prev, index]));
   };
 
   const createBundle = (bundle: BundleOffer) => {
@@ -183,16 +208,21 @@ export const AIStrategies: React.FC<AIStrategiesProps> = ({
                       {rec.impact.toUpperCase()} IMPACT
                     </span>
                   </div>
-                  <button
-                    className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-                    onClick={() => {
-                      if (rec.type === 'pricing' && rec.data?.productId) {
-                        applyPsychologicalPricing(rec.data.productId, rec.data.currentPrice);
-                      }
-                    }}
-                  >
-                    Apply
-                  </button>
+                  <div className="ml-4">
+                    {appliedRecommendations.has(index) ? (
+                      <div className="flex items-center space-x-2 px-4 py-2 bg-green-100 text-green-800 rounded-lg">
+                        <CheckCircle className="w-4 h-4" />
+                        <span className="text-sm font-medium">Applied</span>
+                      </div>
+                    ) : (
+                      <button
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                        onClick={() => applyRecommendation(index, rec)}
+                      >
+                        Apply
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -223,12 +253,17 @@ export const AIStrategies: React.FC<AIStrategiesProps> = ({
                 </div>
                 
                 <div className="space-y-2 mb-4">
-                  {bundle.products.map((product, idx) => (
+                  {bundle.products.slice(0, 4).map((product, idx) => (
                     <div key={idx} className="flex items-center justify-between text-sm">
                       <span className="text-gray-700 truncate">{product.name}</span>
                       <span className="text-gray-500 ml-2">{config.currency} {product.sellingPrice?.toLocaleString()}</span>
                     </div>
                   ))}
+                  {bundle.products.length > 4 && (
+                    <div className="text-xs text-gray-500 text-center">
+                      +{bundle.products.length - 4} more products
+                    </div>
+                  )}
                 </div>
                 
                 <div className="border-t pt-3">

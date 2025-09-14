@@ -71,6 +71,10 @@ function App() {
     localStorage.setItem('trustcart-config', JSON.stringify(config));
   }, [config]);
 
+  useEffect(() => {
+    localStorage.setItem('trustcart-bundles', JSON.stringify(bundles));
+  }, [bundles]);
+
   // Calculate metrics whenever products or config changes
   useEffect(() => {
     calculateMetrics();

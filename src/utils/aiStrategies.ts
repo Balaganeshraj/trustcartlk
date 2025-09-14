@@ -204,8 +204,8 @@ export const categoryBundleConfig = {
   'Office Supplies': {
     name: 'Office Productivity Set',
     color: '#6B7280',
-    minProducts: 3,
-    maxProducts: 5,
+    minProducts: 2,
+    maxProducts: 4,
     discount: 15,
     keywords: ['office', 'stationery', 'business', 'work']
   }
@@ -288,11 +288,11 @@ export const generateAutoBundles = (products: any[]) => {
   // Generate bundles for each category
   Object.entries(categoryGroups).forEach(([category, categoryProducts]: [string, any[]]) => {
     const config = categoryBundleConfig[category];
-    if (!config || categoryProducts.length < config.minProducts) return;
+    if (!config || categoryProducts.length < 2) return;
     
     // Sort by price and create bundle
     const sortedProducts = categoryProducts.sort((a, b) => a.sellingPrice - b.sellingPrice);
-    const bundleProducts = sortedProducts.slice(0, Math.min(config.maxProducts, sortedProducts.length));
+    const bundleProducts = sortedProducts.slice(0, Math.min(4, Math.max(3, sortedProducts.length)));
     
     const originalPrice = bundleProducts.reduce((sum, p) => sum + p.sellingPrice, 0);
     const discount = config.discount;
