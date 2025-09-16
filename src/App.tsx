@@ -3,7 +3,7 @@ import { Plus, Upload, Download, Calculator, TrendingUp, DollarSign, Package, Se
 import { ProductManager } from './components/ProductManager';
 import { Dashboard } from './components/Dashboard';
 import { PricingSettings } from './components/PricingSettings';
-import { ImportExport } from './components/ImportExport';
+import { AdvancedImportExport } from './components/AdvancedImportExport';
 import { AIStrategies } from './components/AIStrategies';
 import { BundleManager } from './components/BundleManager';
 import { Product, PricingConfig, DashboardMetrics, BundleOffer } from './types';
@@ -256,9 +256,10 @@ function App() {
               onApplyToAllProducts={applyPricingToAllProducts}
               productCount={products.filter(p => p.isActive && p.costPrice > 0).length}
             />
-            <ImportExport
+            <AdvancedImportExport
               products={products}
               setProducts={setProducts}
+              bundles={bundles}
               config={config}
             />
           </div>
