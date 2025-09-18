@@ -160,28 +160,30 @@ function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+      <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-white shadow-lg border-b-2 border-orange-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center">
-                <Calculator className="w-6 h-6 text-white" />
-              </div>
+              <img 
+                src="/Trustcart Logo.png" 
+                alt="Trustcart Logo" 
+                className="h-10 w-auto"
+              />
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Trustcart.lk</h1>
-                <p className="text-sm text-gray-500">Advanced Pricing Calculator</p>
+                <h1 className="text-xl font-bold text-black">Trustcart.lk</h1>
+                <p className="text-sm text-orange-600">Advanced Pricing Calculator</p>
               </div>
             </div>
             
             <div className="flex items-center space-x-4">
               <div className="text-right">
-                <div className="text-sm font-medium text-gray-900">{config.currency} {metrics.totalProfit.toLocaleString()}</div>
-                <div className="text-xs text-gray-500">Total Profit</div>
+                <div className="text-sm font-medium text-black">{config.currency} {metrics.totalProfit.toLocaleString()}</div>
+                <div className="text-xs text-orange-600">Total Profit</div>
               </div>
-              <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full flex items-center justify-center">
+                <TrendingUp className="w-4 h-4 text-black" />
               </div>
             </div>
           </div>
@@ -189,7 +191,7 @@ function App() {
       </header>
 
       {/* Navigation Tabs */}
-      <nav className="bg-white border-b border-gray-200">
+      <nav className="bg-white border-b-2 border-orange-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-8">
             {tabs.map((tab) => (
@@ -198,8 +200,8 @@ function App() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
                   activeTab === tab.id
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-orange-500 text-orange-600'
+                    : 'border-transparent text-gray-500 hover:text-black hover:border-orange-300'
                 }`}
               >
                 <tab.icon className="w-5 h-5" />
@@ -211,7 +213,7 @@ function App() {
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white min-h-screen">
         {activeTab === 'products' && (
           <ProductManager
             products={products}

@@ -80,48 +80,48 @@ export const Dashboard: React.FC<DashboardProps> = ({
       title: 'Total Investment',
       value: formatCurrency(metrics.totalInvestment),
       icon: DollarSign,
-      color: 'from-blue-500 to-blue-600',
-      bgColor: 'from-blue-50 to-blue-100',
+      color: 'from-orange-500 to-yellow-500',
+      bgColor: 'from-orange-50 to-yellow-50',
       change: '+12.5%'
     },
     {
       title: 'Total Revenue',
       value: formatCurrency(metrics.totalRevenue),
       icon: TrendingUp,
-      color: 'from-green-500 to-green-600',
-      bgColor: 'from-green-50 to-green-100',
+      color: 'from-yellow-500 to-orange-500',
+      bgColor: 'from-yellow-50 to-orange-50',
       change: '+18.2%'
     },
     {
       title: 'Net Profit',
       value: formatCurrency(metrics.totalProfit),
       icon: Target,
-      color: 'from-purple-500 to-purple-600',
-      bgColor: 'from-purple-50 to-purple-100',
+      color: 'from-orange-600 to-red-500',
+      bgColor: 'from-orange-50 to-red-50',
       change: '+24.7%'
     },
     {
       title: 'ROI',
       value: `${metrics.roi.toFixed(1)}%`,
       icon: BarChart3,
-      color: 'from-orange-500 to-orange-600',
-      bgColor: 'from-orange-50 to-orange-100',
+      color: 'from-yellow-600 to-orange-600',
+      bgColor: 'from-yellow-50 to-orange-50',
       change: '+8.3%'
     }
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 bg-white">
       {/* Header */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-xl shadow-lg border-2 border-orange-200 p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Business Dashboard</h2>
-            <p className="text-gray-600 mt-1">Real-time insights into your pricing strategy and profitability</p>
+            <h2 className="text-2xl font-bold text-black">Business Dashboard</h2>
+            <p className="text-gray-700 mt-1">Real-time insights into your pricing strategy and profitability</p>
           </div>
           <div className="text-right">
-            <div className="text-3xl font-bold text-green-600">{metrics.profitMargin.toFixed(1)}%</div>
-            <div className="text-sm text-gray-500">Overall Profit Margin</div>
+            <div className="text-3xl font-bold text-orange-600">{metrics.profitMargin.toFixed(1)}%</div>
+            <div className="text-sm text-orange-500">Overall Profit Margin</div>
           </div>
         </div>
       </div>
@@ -129,15 +129,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* Key Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {metricCards.map((metric, index) => (
-          <div key={index} className={`bg-gradient-to-br ${metric.bgColor} rounded-xl p-6 border border-gray-200 hover:shadow-lg transition-all duration-200`}>
+          <div key={index} className={`bg-gradient-to-br ${metric.bgColor} rounded-xl p-6 border-2 border-orange-200 hover:shadow-lg transition-all duration-200`}>
             <div className="flex items-center justify-between mb-4">
               <div className={`p-3 bg-gradient-to-r ${metric.color} rounded-lg`}>
                 <metric.icon className="w-6 h-6 text-white" />
               </div>
-              <span className="text-green-600 text-sm font-medium">{metric.change}</span>
+              <span className="text-orange-600 text-sm font-medium">{metric.change}</span>
             </div>
-            <div className="text-2xl font-bold text-gray-900 mb-1">{metric.value}</div>
-            <div className="text-gray-600 text-sm">{metric.title}</div>
+            <div className="text-2xl font-bold text-black mb-1">{metric.value}</div>
+            <div className="text-gray-700 text-sm">{metric.title}</div>
           </div>
         ))}
       </div>
@@ -145,10 +145,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Category Performance */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-lg border-2 border-orange-200 p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold text-gray-900">Category Performance</h3>
-            <PieChart className="w-6 h-6 text-gray-400" />
+            <h3 className="text-xl font-semibold text-black">Category Performance</h3>
+            <PieChart className="w-6 h-6 text-orange-600" />
           </div>
           
           <div className="space-y-4">
@@ -158,18 +158,18 @@ export const Dashboard: React.FC<DashboardProps> = ({
               return (
                 <div key={category.category} className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-900">{category.category}</span>
-                    <span className="text-sm text-gray-600">{formatCurrency(category.totalProfit)}</span>
+                    <span className="text-sm font-medium text-black">{category.category}</span>
+                    <span className="text-sm text-gray-700">{formatCurrency(category.totalProfit)}</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="flex-1 bg-gray-200 rounded-full h-2">
                       <div 
                         className={`h-2 rounded-full bg-gradient-to-r ${
-                          index === 0 ? 'from-blue-500 to-blue-600' :
-                          index === 1 ? 'from-green-500 to-green-600' :
-                          index === 2 ? 'from-purple-500 to-purple-600' :
-                          index === 3 ? 'from-orange-500 to-orange-600' :
-                          'from-gray-400 to-gray-500'
+                          index === 0 ? 'from-orange-500 to-yellow-500' :
+                          index === 1 ? 'from-yellow-500 to-orange-500' :
+                          index === 2 ? 'from-orange-600 to-red-500' :
+                          index === 3 ? 'from-yellow-600 to-orange-600' :
+                          'from-orange-400 to-yellow-400'
                         }`}
                         style={{ width: `${Math.max(profitPercentage, 2)}%` }}
                       />
@@ -187,16 +187,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         {/* Profit Distribution */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-lg border-2 border-orange-200 p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold text-gray-900">Profit Distribution</h3>
-            <BarChart3 className="w-6 h-6 text-gray-400" />
+            <h3 className="text-xl font-semibold text-black">Profit Distribution</h3>
+            <BarChart3 className="w-6 h-6 text-orange-600" />
           </div>
           
           <div className="space-y-4">
             {[
-              { label: 'High Profit (≥25%)', count: profitDistribution.high, color: 'from-green-500 to-green-600', bgColor: 'bg-green-100' },
-              { label: 'Good Profit (15-24%)', count: profitDistribution.good, color: 'from-blue-500 to-blue-600', bgColor: 'bg-blue-100' },
+              { label: 'High Profit (≥25%)', count: profitDistribution.high, color: 'from-orange-500 to-yellow-500', bgColor: 'bg-orange-100' },
+              { label: 'Good Profit (15-24%)', count: profitDistribution.good, color: 'from-yellow-500 to-orange-500', bgColor: 'bg-yellow-100' },
               { label: 'Fair Profit (5-14%)', count: profitDistribution.fair, color: 'from-yellow-500 to-yellow-600', bgColor: 'bg-yellow-100' },
               { label: 'Low Profit (<5%)', count: profitDistribution.low, color: 'from-red-500 to-red-600', bgColor: 'bg-red-100' }
             ].map((item, index) => {
@@ -205,8 +205,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
               return (
                 <div key={index} className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-900">{item.label}</span>
-                    <span className="text-sm text-gray-600">{item.count} products</span>
+                    <span className="text-sm font-medium text-black">{item.label}</span>
+                    <span className="text-sm text-gray-700">{item.count} products</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="flex-1 bg-gray-200 rounded-full h-2">
@@ -225,46 +225,46 @@ export const Dashboard: React.FC<DashboardProps> = ({
       </div>
 
       {/* Detailed Analytics */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 className="text-xl font-semibold text-gray-900 mb-6">Detailed Product Analytics</h3>
+      <div className="bg-white rounded-xl shadow-lg border-2 border-orange-200 p-6">
+        <h3 className="text-xl font-semibold text-black mb-6">Detailed Product Analytics</h3>
         
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Products</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Investment</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profit</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg Margin</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Performance</th>
+              <tr className="bg-gradient-to-r from-orange-50 to-yellow-50 border-b-2 border-orange-200">
+                <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Category</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Products</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Investment</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Profit</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Avg Margin</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Performance</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {categoryStats.map((category, index) => (
-                <tr key={category.category} className="hover:bg-gray-50 transition-colors">
+                <tr key={category.category} className="hover:bg-orange-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm font-medium text-gray-900">{category.category}</span>
+                    <span className="text-sm font-medium text-black">{category.category}</span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm text-gray-900">{category.count}</span>
+                    <span className="text-sm text-black">{category.count}</span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm font-medium text-gray-900">{formatCurrency(category.totalInvestment)}</span>
+                    <span className="text-sm font-medium text-black">{formatCurrency(category.totalInvestment)}</span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm font-bold text-green-600">{formatCurrency(category.totalProfit)}</span>
+                    <span className="text-sm font-bold text-orange-600">{formatCurrency(category.totalProfit)}</span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm font-medium text-gray-900">{category.avgProfitMargin.toFixed(1)}%</span>
+                    <span className="text-sm font-medium text-black">{category.avgProfitMargin.toFixed(1)}%</span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="w-16 bg-gray-200 rounded-full h-1.5">
                         <div 
                           className={`h-1.5 rounded-full ${
-                            category.avgProfitMargin >= 25 ? 'bg-green-500' :
-                            category.avgProfitMargin >= 15 ? 'bg-blue-500' :
+                            category.avgProfitMargin >= 25 ? 'bg-orange-500' :
+                            category.avgProfitMargin >= 15 ? 'bg-yellow-500' :
                             category.avgProfitMargin >= 5 ? 'bg-yellow-500' :
                             'bg-red-500'
                           }`}
@@ -272,9 +272,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         />
                       </div>
                       <span className={`ml-2 text-xs font-medium ${
-                        category.avgProfitMargin >= 25 ? 'text-green-600' :
-                        category.avgProfitMargin >= 15 ? 'text-blue-600' :
-                        category.avgProfitMargin >= 5 ? 'text-yellow-600' :
+                        category.avgProfitMargin >= 25 ? 'text-orange-600' :
+                        category.avgProfitMargin >= 15 ? 'text-yellow-600' :
+                        category.avgProfitMargin >= 5 ? 'text-yellow-500' :
                         'text-red-600'
                       }`}>
                         {category.avgProfitMargin >= 25 ? 'Excellent' :

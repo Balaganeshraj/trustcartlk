@@ -298,19 +298,19 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-white">
       {/* Header */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="bg-white rounded-xl shadow-lg border-2 border-orange-200 p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Product Management</h2>
-            <p className="text-gray-600 mt-1">Manage your product inventory with advanced pricing calculations</p>
+            <h2 className="text-2xl font-bold text-black">Product Management</h2>
+            <p className="text-gray-700 mt-1">Manage your product inventory with advanced pricing calculations</p>
           </div>
           <div className="flex items-center space-x-3">
             {products.length > 0 && (
               <button
                 onClick={() => setShowResetConfirm(true)}
-                className="flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                className="flex items-center space-x-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
               >
                 <RefreshCw className="w-4 h-4" />
                 <span>Reset All</span>
@@ -327,14 +327,14 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
             )}
             <button
               onClick={() => setShowImportModal(true)}
-              className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+              className="flex items-center space-x-2 bg-gradient-to-r from-orange-500 to-yellow-500 text-black px-4 py-2 rounded-lg hover:from-orange-600 hover:to-yellow-600 transition-colors font-medium"
             >
               <Upload className="w-4 h-4" />
               <span>Import CSV</span>
             </button>
             <button
               onClick={() => setShowAddForm(true)}
-              className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex items-center space-x-2 bg-gradient-to-r from-orange-600 to-red-500 text-white px-4 py-2 rounded-lg hover:from-orange-700 hover:to-red-600 transition-colors font-medium"
             >
               <Plus className="w-4 h-4" />
               <span>Add Product</span>
@@ -345,21 +345,21 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
         {/* Search and Filter */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-400 w-5 h-5" />
             <input
               type="text"
               placeholder="Search products by name, category, or SKU..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border-2 border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             />
           </div>
           <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-400 w-5 h-5" />
             <select
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
-              className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="pl-10 pr-8 py-2 border-2 border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             >
               <option value="">All Categories</option>
               {categories.map(category => (
@@ -372,28 +372,28 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
 
       {/* Products Table */}
       {filteredProducts.length > 0 ? (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-lg border-2 border-orange-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Market Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Selling Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profit</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Margin %</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Product</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Category</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Cost Price</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Market Price</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Selling Price</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Quantity</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Profit</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Margin %</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={product.id} className="hover:bg-orange-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                        <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
                           <Package className="w-5 h-5 text-white" />
                         </div>
                         <div className="ml-4">
@@ -401,9 +401,9 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                             type="text"
                             value={product.name}
                             onChange={(e) => updateProduct(product.id, 'name', e.target.value)}
-                            className="text-sm font-medium text-gray-900 bg-transparent border-b border-gray-200 hover:border-blue-300 focus:border-blue-500 outline-none w-full"
+                            className="text-sm font-medium text-black bg-transparent border-b border-orange-200 hover:border-orange-400 focus:border-orange-500 outline-none w-full"
                           />
-                          {product.sku && <div className="text-sm text-gray-500">SKU: {product.sku}</div>}
+                          {product.sku && <div className="text-sm text-orange-600">SKU: {product.sku}</div>}
                         </div>
                       </div>
                     </td>
@@ -412,17 +412,17 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                         type="text"
                         value={product.category}
                         onChange={(e) => updateProduct(product.id, 'category', e.target.value)}
-                        className="text-sm text-gray-900 bg-transparent border-b border-gray-200 hover:border-blue-300 focus:border-blue-500 outline-none w-full"
+                        className="text-sm text-black bg-transparent border-b border-orange-200 hover:border-orange-400 focus:border-orange-500 outline-none w-full"
                       />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <span className="text-xs text-gray-500 mr-1">{config.currency}</span>
+                        <span className="text-xs text-orange-600 mr-1">{config.currency}</span>
                         <input
                           type="number"
                           value={product.costPrice}
                           onChange={(e) => updateProduct(product.id, 'costPrice', parseFloat(e.target.value) || 0)}
-                          className="text-sm font-medium text-gray-900 bg-transparent border-b border-gray-200 hover:border-orange-300 focus:border-orange-500 outline-none w-20"
+                          className="text-sm font-medium text-black bg-transparent border-b border-orange-200 hover:border-orange-400 focus:border-orange-500 outline-none w-20"
                           min="0"
                           step="0.01"
                         />
@@ -430,12 +430,12 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <span className="text-xs text-gray-500 mr-1">{config.currency}</span>
+                        <span className="text-xs text-orange-600 mr-1">{config.currency}</span>
                         <input
                           type="number"
                           value={product.marketPrice || ''}
                           onChange={(e) => updateProduct(product.id, 'marketPrice', parseFloat(e.target.value) || 0)}
-                          className="text-sm text-gray-600 bg-transparent border-b border-gray-200 hover:border-purple-300 focus:border-purple-500 outline-none w-20"
+                          className="text-sm text-gray-700 bg-transparent border-b border-orange-200 hover:border-orange-400 focus:border-orange-500 outline-none w-20"
                           min="0"
                           step="0.01"
                           placeholder="0"
@@ -444,12 +444,12 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <span className="text-xs text-gray-500 mr-1">{config.currency}</span>
+                        <span className="text-xs text-orange-600 mr-1">{config.currency}</span>
                         <input
                           type="number"
                           value={product.sellingPrice || ''}
                           onChange={(e) => updateProduct(product.id, 'sellingPrice', parseFloat(e.target.value) || 0)}
-                          className="text-sm font-medium text-green-600 bg-transparent border-b border-gray-200 hover:border-green-300 focus:border-green-500 outline-none w-20"
+                          className="text-sm font-medium text-orange-600 bg-transparent border-b border-orange-200 hover:border-orange-400 focus:border-orange-500 outline-none w-20"
                           min="0"
                           step="0.01"
                           placeholder={calculatePrice(product.costPrice).sellingPrice.toString()}
@@ -461,19 +461,19 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                         type="number"
                         value={product.quantity}
                         onChange={(e) => updateProduct(product.id, 'quantity', parseInt(e.target.value) || 1)}
-                        className="text-sm text-gray-900 bg-transparent border-b border-gray-200 hover:border-blue-300 focus:border-blue-500 outline-none w-16"
+                        className="text-sm text-black bg-transparent border-b border-orange-200 hover:border-orange-400 focus:border-orange-500 outline-none w-16"
                         min="1"
                       />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-medium text-green-600">
+                      <span className="text-sm font-medium text-orange-600">
                         {config.currency} {Math.round(getNetProfit(product)).toLocaleString()}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`text-sm font-medium ${
-                        getProfitMargin(product) >= 25 ? 'text-green-600' :
-                        getProfitMargin(product) >= 15 ? 'text-blue-600' :
+                        getProfitMargin(product) >= 25 ? 'text-orange-600' :
+                        getProfitMargin(product) >= 15 ? 'text-yellow-600' :
                         getProfitMargin(product) >= 5 ? 'text-yellow-600' :
                         'text-red-600'
                       }`}>
@@ -484,14 +484,14 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => setEditingProduct(product.id)}
-                          className="text-blue-600 hover:text-blue-900 p-1 rounded"
+                          className="text-orange-600 hover:text-orange-800 p-1 rounded"
                           title="Edit"
                         >
                           <Edit3 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => duplicateProduct(product)}
-                          className="text-purple-600 hover:text-purple-900 p-1 rounded"
+                          className="text-yellow-600 hover:text-yellow-800 p-1 rounded"
                           title="Duplicate"
                         >
                           📋
@@ -512,12 +512,12 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-          <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <div className="bg-white rounded-xl shadow-lg border-2 border-orange-200 p-12 text-center">
+          <Package className="w-16 h-16 text-orange-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-black mb-2">
             {products.length === 0 ? 'No products yet' : 'No products match your search'}
           </h3>
-          <p className="text-gray-500 mb-4">
+          <p className="text-gray-700 mb-4">
             {products.length === 0 
               ? 'Add your first product or import from CSV to get started'
               : 'Try adjusting your search terms or filters'
@@ -550,7 +550,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                     type="text"
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border-2 border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="Enter product name..."
                     required
                   />
@@ -567,7 +567,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                     type="text"
                     value={formData.category}
                     onChange={(e) => handleInputChange('category', e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border-2 border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="Auto-detected or enter manually..."
                   />
                 </div>
@@ -580,7 +580,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                     type="number"
                     value={formData.costPrice}
                     onChange={(e) => handleInputChange('costPrice', e.target.value)}
-                    className="w-full p-2 border border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    className="w-full p-2 border-2 border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="0"
                     min="0"
                     step="0.01"
@@ -596,7 +596,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                     type="number"
                     value={formData.marketPrice}
                     onChange={(e) => handleInputChange('marketPrice', e.target.value)}
-                    className="w-full p-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full p-2 border-2 border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="0"
                     min="0"
                     step="0.01"
@@ -611,7 +611,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                     type="number"
                     value={formData.sellingPrice}
                     onChange={(e) => handleInputChange('sellingPrice', e.target.value)}
-                    className="w-full p-2 border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full p-2 border-2 border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder={formData.costPrice ? calculatePrice(parseFloat(formData.costPrice) || 0).sellingPrice.toString() : '0'}
                     min="0"
                     step="0.01"
@@ -626,7 +626,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                     type="number"
                     value={formData.quantity}
                     onChange={(e) => handleInputChange('quantity', e.target.value)}
-                    className="w-full p-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border-2 border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="1"
                     min="1"
                     required
@@ -641,7 +641,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                     type="text"
                     value={formData.sku}
                     onChange={(e) => handleInputChange('sku', e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border-2 border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="Product code..."
                   />
                 </div>
@@ -654,7 +654,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                     type="text"
                     value={formData.supplier}
                     onChange={(e) => handleInputChange('supplier', e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full p-2 border-2 border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                     placeholder="Supplier name..."
                   />
                 </div>
@@ -667,25 +667,25 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                 <textarea
                   value={formData.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full p-2 border-2 border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   placeholder="Product description..."
                   rows={3}
                 />
               </div>
 
               {(formData.costPrice || formData.sellingPrice) && (
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h4 className="font-medium text-gray-900 mb-2">Pricing Preview</h4>
+                <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                  <h4 className="font-medium text-black mb-2">Pricing Preview</h4>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <span className="text-gray-600">Calculated Price:</span>
-                      <span className="ml-2 font-medium text-blue-600">
+                      <span className="text-gray-700">Calculated Price:</span>
+                      <span className="ml-2 font-medium text-orange-600">
                         {config.currency} {calculatePrice(parseFloat(formData.costPrice) || 0).sellingPrice.toLocaleString()}
                       </span>
                     </div>
                     <div>
-                      <span className="text-gray-600">Net Profit:</span>
-                      <span className="ml-2 font-medium text-green-600">
+                      <span className="text-gray-700">Net Profit:</span>
+                      <span className="ml-2 font-medium text-orange-600">
                         {config.currency} {Math.round(calculatePrice(parseFloat(formData.costPrice) || 0).netProfit).toLocaleString()}
                       </span>
                     </div>
@@ -703,7 +703,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="flex-1 px-4 py-2 bg-gradient-to-r from-orange-500 to-yellow-500 text-black rounded-lg hover:from-orange-600 hover:to-yellow-600 font-medium"
                 >
                   Add Product
                 </button>
@@ -751,7 +751,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                 />
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                  className="bg-gradient-to-r from-orange-500 to-yellow-500 text-black px-4 py-2 rounded-lg hover:from-orange-600 hover:to-yellow-600 font-medium"
                 >
                   Select CSV File
                 </button>
@@ -760,7 +760,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
               <div className="flex justify-between items-center">
                 <button
                   onClick={downloadSampleCSV}
-                  className="flex items-center gap-2 text-green-600 hover:text-green-700"
+                  className="flex items-center gap-2 text-orange-600 hover:text-orange-700"
                 >
                   <Download className="w-4 h-4" />
                   Download Sample CSV
@@ -812,7 +812,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
               </button>
               <button
                 onClick={handleReset}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
               >
                 Yes, Reset All
               </button>
