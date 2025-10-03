@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Plus, Upload, Download, X, Package, DollarSign, Hash, Tag, RefreshCw, Trash2, Edit3, Save, Search, Filter } from 'lucide-react';
+import { Plus, Upload, Download, X, Package, DollarSign, Hash, Tag, RefreshCw, Trash2, CreditCard as Edit3, Save, Search, Filter } from 'lucide-react';
 import { Product, PricingConfig, PriceCalculation } from '../types';
 import { detectProductCategory, getCategorySuggestions } from '../utils/categoryDetection';
 
