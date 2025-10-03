@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Upload, Download, Calculator, TrendingUp, DollarSign, Package, Settings, Search, Filter, Edit3, Trash2, Save, X, Check, BarChart3, Gift, LogOut, User as UserIcon } from 'lucide-react';
+import { Plus, Upload, Download, Calculator, TrendingUp, DollarSign, Package, Settings, Search, Filter, CreditCard as Edit3, Trash2, Save, X, Check, BarChart3, Gift, LogOut, User as UserIcon } from 'lucide-react';
 import { ProductManager } from './components/ProductManager';
 import { Dashboard } from './components/Dashboard';
 import { PricingSettings } from './components/PricingSettings';
