@@ -372,145 +372,330 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
 
       {/* Products Table */}
       {filteredProducts.length > 0 ? (
-        <div className="bg-white rounded-xl shadow-lg border-2 border-orange-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Product</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Category</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Cost Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Market Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Selling Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Quantity</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Profit</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Margin %</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-orange-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
-                          <Package className="w-5 h-5 text-white" />
+        <>
+          {/* Desktop Table View */}
+          <div className="hidden lg:block bg-white rounded-xl shadow-lg border-2 border-orange-200 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full table-fixed">
+                <colgroup>
+                  <col className="w-80" /> {/* Product Name - wider */}
+                  <col className="w-40" /> {/* Category */}
+                  <col className="w-32" /> {/* Cost Price */}
+                  <col className="w-32" /> {/* Market Price */}
+                  <col className="w-32" /> {/* Selling Price */}
+                  <col className="w-24" /> {/* Quantity */}
+                  <col className="w-32" /> {/* Profit */}
+                  <col className="w-24" /> {/* Margin */}
+                  <col className="w-32" /> {/* Actions */}
+                </colgroup>
+                <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider resize-x overflow-hidden">
+                      <div className="flex items-center justify-between">
+                        <span>Product</span>
+                        <div className="w-1 h-6 bg-gray-300 cursor-col-resize hover:bg-orange-400"></div>
+                      </div>
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Category</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Cost Price</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Market Price</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Selling Price</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Qty</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Profit</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Margin</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filteredProducts.map((product) => (
+                    <tr key={product.id} className="hover:bg-orange-50 transition-colors">
+                      <td className="px-4 py-4">
+                        <div className="flex items-start space-x-3">
+                          <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
+                            <Package className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <textarea
+                              value={product.name}
+                              onChange={(e) => updateProduct(product.id, 'name', e.target.value)}
+                              className="w-full text-sm font-medium text-black bg-transparent border border-orange-200 hover:border-orange-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none rounded px-2 py-1 resize-none overflow-hidden"
+                              rows={2}
+                              style={{ minHeight: '40px' }}
+                              onInput={(e) => {
+                                const target = e.target as HTMLTextAreaElement;
+                                target.style.height = 'auto';
+                                target.style.height = Math.max(40, target.scrollHeight) + 'px';
+                              }}
+                            />
+                            {product.sku && (
+                              <div className="text-xs text-orange-600 mt-1 truncate" title={`SKU: ${product.sku}`}>
+                                SKU: {product.sku}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <div className="ml-4">
+                      </td>
+                      <td className="px-4 py-4">
+                        <input
+                          type="text"
+                          value={product.category}
+                          onChange={(e) => updateProduct(product.id, 'category', e.target.value)}
+                          className="w-full text-sm text-black bg-transparent border border-orange-200 hover:border-orange-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none rounded px-2 py-1"
+                        />
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center space-x-1">
+                          <span className="text-xs text-orange-600">{config.currency}</span>
                           <input
-                            type="text"
-                            value={product.name}
-                            onChange={(e) => updateProduct(product.id, 'name', e.target.value)}
-                            className="text-sm font-medium text-black bg-transparent border-b border-orange-200 hover:border-orange-400 focus:border-orange-500 outline-none w-full"
+                            type="number"
+                            value={product.costPrice}
+                            onChange={(e) => updateProduct(product.id, 'costPrice', parseFloat(e.target.value) || 0)}
+                            className="flex-1 text-sm font-medium text-black bg-transparent border border-orange-200 hover:border-orange-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none rounded px-2 py-1"
+                            min="0"
+                            step="0.01"
                           />
-                          {product.sku && <div className="text-sm text-orange-600">SKU: {product.sku}</div>}
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <input
-                        type="text"
-                        value={product.category}
-                        onChange={(e) => updateProduct(product.id, 'category', e.target.value)}
-                        className="text-sm text-black bg-transparent border-b border-orange-200 hover:border-orange-400 focus:border-orange-500 outline-none w-full"
-                      />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <span className="text-xs text-orange-600 mr-1">{config.currency}</span>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center space-x-1">
+                          <span className="text-xs text-orange-600">{config.currency}</span>
+                          <input
+                            type="number"
+                            value={product.marketPrice || ''}
+                            onChange={(e) => updateProduct(product.id, 'marketPrice', parseFloat(e.target.value) || 0)}
+                            className="flex-1 text-sm text-gray-700 bg-transparent border border-orange-200 hover:border-orange-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none rounded px-2 py-1"
+                            min="0"
+                            step="0.01"
+                            placeholder="0"
+                          />
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center space-x-1">
+                          <span className="text-xs text-orange-600">{config.currency}</span>
+                          <input
+                            type="number"
+                            value={product.sellingPrice || ''}
+                            onChange={(e) => updateProduct(product.id, 'sellingPrice', parseFloat(e.target.value) || 0)}
+                            className="flex-1 text-sm font-medium text-orange-600 bg-transparent border border-orange-200 hover:border-orange-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none rounded px-2 py-1"
+                            min="0"
+                            step="0.01"
+                            placeholder={calculatePrice(product.costPrice).sellingPrice.toString()}
+                          />
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
                         <input
                           type="number"
-                          value={product.costPrice}
-                          onChange={(e) => updateProduct(product.id, 'costPrice', parseFloat(e.target.value) || 0)}
-                          className="text-sm font-medium text-black bg-transparent border-b border-orange-200 hover:border-orange-400 focus:border-orange-500 outline-none w-20"
-                          min="0"
-                          step="0.01"
+                          value={product.quantity}
+                          onChange={(e) => updateProduct(product.id, 'quantity', parseInt(e.target.value) || 1)}
+                          className="w-full text-sm text-black bg-transparent border border-orange-200 hover:border-orange-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none rounded px-2 py-1"
+                          min="1"
                         />
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <span className="text-xs text-orange-600 mr-1">{config.currency}</span>
-                        <input
-                          type="number"
-                          value={product.marketPrice || ''}
-                          onChange={(e) => updateProduct(product.id, 'marketPrice', parseFloat(e.target.value) || 0)}
-                          className="text-sm text-gray-700 bg-transparent border-b border-orange-200 hover:border-orange-400 focus:border-orange-500 outline-none w-20"
-                          min="0"
-                          step="0.01"
-                          placeholder="0"
-                        />
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <span className="text-xs text-orange-600 mr-1">{config.currency}</span>
-                        <input
-                          type="number"
-                          value={product.sellingPrice || ''}
-                          onChange={(e) => updateProduct(product.id, 'sellingPrice', parseFloat(e.target.value) || 0)}
-                          className="text-sm font-medium text-orange-600 bg-transparent border-b border-orange-200 hover:border-orange-400 focus:border-orange-500 outline-none w-20"
-                          min="0"
-                          step="0.01"
-                          placeholder={calculatePrice(product.costPrice).sellingPrice.toString()}
-                        />
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="text-sm font-medium text-orange-600">
+                          {config.currency} {Math.round(getNetProfit(product)).toLocaleString()}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className={`text-sm font-medium ${
+                          getProfitMargin(product) >= 25 ? 'text-orange-600' :
+                          getProfitMargin(product) >= 15 ? 'text-yellow-600' :
+                          getProfitMargin(product) >= 5 ? 'text-yellow-600' :
+                          'text-red-600'
+                        }`}>
+                          {getProfitMargin(product).toFixed(1)}%
+                        </span>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center space-x-1">
+                          <button
+                            onClick={() => setEditingProduct(product.id)}
+                            className="text-orange-600 hover:text-orange-800 p-1 rounded hover:bg-orange-100"
+                            title="Edit"
+                          >
+                            <Edit3 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => duplicateProduct(product)}
+                            className="text-yellow-600 hover:text-yellow-800 p-1 rounded hover:bg-yellow-100"
+                            title="Duplicate"
+                          >
+                            📋
+                          </button>
+                          <button
+                            onClick={() => deleteProduct(product.id)}
+                            className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-100"
+                            title="Delete"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="lg:hidden space-y-4">
+            {filteredProducts.map((product) => (
+              <div key={product.id} className="bg-white rounded-xl shadow-lg border-2 border-orange-200 p-4">
+                {/* Product Header */}
+                <div className="flex items-start space-x-3 mb-4">
+                  <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
+                    <Package className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <textarea
+                      value={product.name}
+                      onChange={(e) => updateProduct(product.id, 'name', e.target.value)}
+                      className="w-full text-base font-medium text-black bg-transparent border border-orange-200 hover:border-orange-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none rounded px-3 py-2 resize-none"
+                      rows={2}
+                      placeholder="Product name..."
+                      onInput={(e) => {
+                        const target = e.target as HTMLTextAreaElement;
+                        target.style.height = 'auto';
+                        target.style.height = Math.max(44, target.scrollHeight) + 'px';
+                      }}
+                    />
+                    {product.sku && (
+                      <div className="text-sm text-orange-600 mt-1">SKU: {product.sku}</div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Product Details Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-xs font-medium text-orange-700 mb-1">Category</label>
+                    <input
+                      type="text"
+                      value={product.category}
+                      onChange={(e) => updateProduct(product.id, 'category', e.target.value)}
+                      className="w-full text-sm text-black bg-orange-50 border border-orange-200 hover:border-orange-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none rounded px-3 py-2"
+                      placeholder="Category..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-orange-700 mb-1">Quantity</label>
+                    <input
+                      type="number"
+                      value={product.quantity}
+                      onChange={(e) => updateProduct(product.id, 'quantity', parseInt(e.target.value) || 1)}
+                      className="w-full text-sm text-black bg-orange-50 border border-orange-200 hover:border-orange-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none rounded px-3 py-2"
+                      min="1"
+                    />
+                  </div>
+                </div>
+
+                {/* Pricing Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                  <div>
+                    <label className="block text-xs font-medium text-orange-700 mb-1">Cost Price</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xs text-orange-600">{config.currency}</span>
                       <input
                         type="number"
-                        value={product.quantity}
-                        onChange={(e) => updateProduct(product.id, 'quantity', parseInt(e.target.value) || 1)}
-                        className="text-sm text-black bg-transparent border-b border-orange-200 hover:border-orange-400 focus:border-orange-500 outline-none w-16"
-                        min="1"
+                        value={product.costPrice}
+                        onChange={(e) => updateProduct(product.id, 'costPrice', parseFloat(e.target.value) || 0)}
+                        className="w-full pl-12 pr-3 py-2 text-sm font-medium text-black bg-orange-50 border border-orange-200 hover:border-orange-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none rounded"
+                        min="0"
+                        step="0.01"
+                        placeholder="0"
                       />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-medium text-orange-600">
-                        {config.currency} {Math.round(getNetProfit(product)).toLocaleString()}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`text-sm font-medium ${
-                        getProfitMargin(product) >= 25 ? 'text-orange-600' :
-                        getProfitMargin(product) >= 15 ? 'text-yellow-600' :
-                        getProfitMargin(product) >= 5 ? 'text-yellow-600' :
-                        'text-red-600'
-                      }`}>
-                        {getProfitMargin(product).toFixed(1)}%
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() => setEditingProduct(product.id)}
-                          className="text-orange-600 hover:text-orange-800 p-1 rounded"
-                          title="Edit"
-                        >
-                          <Edit3 className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => duplicateProduct(product)}
-                          className="text-yellow-600 hover:text-yellow-800 p-1 rounded"
-                          title="Duplicate"
-                        >
-                          📋
-                        </button>
-                        <button
-                          onClick={() => deleteProduct(product.id)}
-                          className="text-red-600 hover:text-red-900 p-1 rounded"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-orange-700 mb-1">Market Price</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xs text-orange-600">{config.currency}</span>
+                      <input
+                        type="number"
+                        value={product.marketPrice || ''}
+                        onChange={(e) => updateProduct(product.id, 'marketPrice', parseFloat(e.target.value) || 0)}
+                        className="w-full pl-12 pr-3 py-2 text-sm text-gray-700 bg-orange-50 border border-orange-200 hover:border-orange-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none rounded"
+                        min="0"
+                        step="0.01"
+                        placeholder="0"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-orange-700 mb-1">Selling Price</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-xs text-orange-600">{config.currency}</span>
+                      <input
+                        type="number"
+                        value={product.sellingPrice || ''}
+                        onChange={(e) => updateProduct(product.id, 'sellingPrice', parseFloat(e.target.value) || 0)}
+                        className="w-full pl-12 pr-3 py-2 text-sm font-medium text-orange-600 bg-orange-50 border border-orange-200 hover:border-orange-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none rounded"
+                        min="0"
+                        step="0.01"
+                        placeholder={calculatePrice(product.costPrice).sellingPrice.toString()}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Profit Info */}
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg border border-orange-200 mb-4">
+                  <div className="text-center">
+                    <div className="text-xs text-orange-700 font-medium">Net Profit</div>
+                    <div className="text-sm font-bold text-orange-600">
+                      {config.currency} {Math.round(getNetProfit(product)).toLocaleString()}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-orange-700 font-medium">Profit Margin</div>
+                    <div className={`text-sm font-bold ${
+                      getProfitMargin(product) >= 25 ? 'text-orange-600' :
+                      getProfitMargin(product) >= 15 ? 'text-yellow-600' :
+                      getProfitMargin(product) >= 5 ? 'text-yellow-600' :
+                      'text-red-600'
+                    }`}>
+                      {getProfitMargin(product).toFixed(1)}%
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-orange-700 font-medium">Total Revenue</div>
+                    <div className="text-sm font-bold text-orange-600">
+                      {config.currency} {((product.sellingPrice || calculatePrice(product.costPrice).sellingPrice) * product.quantity).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center justify-end space-x-3">
+                  <button
+                    onClick={() => setEditingProduct(product.id)}
+                    className="flex items-center space-x-2 text-orange-600 hover:text-orange-800 bg-orange-100 hover:bg-orange-200 px-3 py-2 rounded-lg transition-colors"
+                  >
+                    <Edit3 className="w-4 h-4" />
+                    <span className="text-sm font-medium">Edit</span>
+                  </button>
+                  <button
+                    onClick={() => duplicateProduct(product)}
+                    className="flex items-center space-x-2 text-yellow-600 hover:text-yellow-800 bg-yellow-100 hover:bg-yellow-200 px-3 py-2 rounded-lg transition-colors"
+                  >
+                    <span>📋</span>
+                    <span className="text-sm font-medium">Copy</span>
+                  </button>
+                  <button
+                    onClick={() => deleteProduct(product.id)}
+                    className="flex items-center space-x-2 text-red-600 hover:text-red-800 bg-red-100 hover:bg-red-200 px-3 py-2 rounded-lg transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span className="text-sm font-medium">Delete</span>
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
+        </>
       ) : (
         <div className="bg-white rounded-xl shadow-lg border-2 border-orange-200 p-12 text-center">
           <Package className="w-16 h-16 text-orange-400 mx-auto mb-4" />
