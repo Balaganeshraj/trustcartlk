@@ -415,18 +415,27 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
                             <Package className="w-5 h-5 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <textarea
+                            <div
+                              contentEditable
                               value={product.name}
-                              onChange={(e) => updateProduct(product.id, 'name', e.target.value)}
-                              className="w-full text-sm font-medium text-black bg-transparent border border-orange-200 hover:border-orange-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none rounded px-2 py-1 resize-none overflow-hidden"
-                              rows={2}
-                              style={{ minHeight: '40px' }}
-                              onInput={(e) => {
-                                const target = e.target as HTMLTextAreaElement;
-                                target.style.height = 'auto';
-                                target.style.height = Math.max(40, target.scrollHeight) + 'px';
+                              onBlur={(e) => updateProduct(product.id, 'name', e.currentTarget.textContent || '')}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  e.preventDefault();
+                                  e.currentTarget.blur();
+                                }
                               }}
-                            />
+                              className="w-full text-sm font-medium text-black bg-transparent border border-orange-200 hover:border-orange-400 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none rounded px-2 py-1 min-h-[40px] max-h-[120px] overflow-y-auto break-words whitespace-pre-wrap"
+                              style={{ 
+                                wordBreak: 'break-word',
+                                overflowWrap: 'break-word',
+                                hyphens: 'auto',
+                                lineHeight: '1.4'
+                              }}
+                              suppressContentEditableWarning={true}
+                            >
+                              {product.name}
+                            </div>
                             {product.sku && (
                               <div className="text-xs text-orange-600 mt-1 truncate" title={`SKU: ${product.sku}`}>
                                 SKU: {product.sku}

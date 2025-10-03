@@ -1,14 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Plus, Upload, Download, Calculator, TrendingUp, DollarSign, Package, Settings, Search, Filter, Edit3, Trash2, Save, X, Check, BarChart3, Gift } from 'lucide-react';
+import { Plus, Upload, Download, Calculator, TrendingUp, DollarSign, Package, Settings, Search, Filter, Edit3, Trash2, Save, X, Check, BarChart3, Gift, LogOut, User as UserIcon } from 'lucide-react';
 import { ProductManager } from './components/ProductManager';
 import { Dashboard } from './components/Dashboard';
 import { PricingSettings } from './components/PricingSettings';
 import { AdvancedImportExport } from './components/AdvancedImportExport';
 import { AIStrategies } from './components/AIStrategies';
 import { BundleManager } from './components/BundleManager';
+import { LoginForm } from './components/Auth/LoginForm';
+import { SignupForm } from './components/Auth/SignupForm';
+import { useAuth } from './hooks/useAuth';
 import { Product, PricingConfig, DashboardMetrics, BundleOffer } from './types';
 
 function App() {
+  const { isAuthenticated, user, loading: authLoading, login, signup, logout, error: authError, clearError } = useAuth();
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const [products, setProducts] = useState<Product[]>([]);
   const [bundles, setBundles] = useState<BundleOffer[]>([]);
   const [config, setConfig] = useState<PricingConfig>({
@@ -29,6 +34,47 @@ function App() {
     profitMargin: 0,
     productCount: 0
   });
+
+  // Show loading screen while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-orange-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading Trustcart...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show authentication forms if not authenticated
+  if (!isAuthenticated) {
+    if (authMode === 'signup') {
+      return (
+        <SignupForm
+          onSignup={signup}
+          onSwitchToLogin={() => {
+            setAuthMode('login');
+            clearError();
+          }}
+          loading={authLoading}
+          error={authError}
+        />
+      );
+    }
+
+    return (
+      <LoginForm
+        onLogin={login}
+        onSwitchToSignup={() => {
+          setAuthMode('signup');
+          clearError();
+        }}
+        loading={authLoading}
+        error={authError}
+      />
+    );
+  }
 
   // Initialize default products
   useEffect(() => {
@@ -178,13 +224,32 @@ function App() {
             </div>
             
             <div className="flex items-center space-x-4">
+              {/* User Info */}
+              <div className="hidden md:flex items-center space-x-3">
+                <div className="text-right">
+                  <div className="text-sm font-medium text-black">Welcome, {user?.name}</div>
+                  <div className="text-xs text-orange-600">{user?.company || user?.email}</div>
+                </div>
+                <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full flex items-center justify-center">
+                  <UserIcon className="w-4 h-4 text-white" />
+                </div>
+              </div>
+              
+              {/* Profit Display */}
               <div className="text-right">
                 <div className="text-sm font-medium text-black">{config.currency} {metrics.totalProfit.toLocaleString()}</div>
                 <div className="text-xs text-orange-600">Total Profit</div>
               </div>
-              <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-black" />
-              </div>
+              
+              {/* Logout Button */}
+              <button
+                onClick={logout}
+                className="flex items-center space-x-2 text-orange-600 hover:text-orange-700 bg-orange-100 hover:bg-orange-200 px-3 py-2 rounded-lg transition-colors"
+                title="Logout"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline text-sm font-medium">Logout</span>
+              </button>
             </div>
           </div>
         </div>

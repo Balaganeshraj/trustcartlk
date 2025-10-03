@@ -77,3 +77,19 @@ export interface AIRecommendation {
   action: string;
   data?: any;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  company?: string;
+  phone?: string;
+  createdAt: Date;
+  lastLogin: Date;
+}
+
+export interface AuthState {
+  isAuthenticated: boolean;
+  user: User | null;
+  loading: boolean;
+}
