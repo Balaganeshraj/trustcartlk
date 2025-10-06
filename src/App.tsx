@@ -35,6 +35,125 @@ function App() {
     productCount: 0
   });
 
+  // Initialize default products
+  useEffect(() => {
+    const defaultProducts: Product[] = [
+      { id: '1', name: 'Premium Smartphone', category: 'Electronics', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
+      { id: '2', name: 'Designer Dress', category: 'Fashion', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
+      { id: '3', name: 'Luxury Furniture Set', category: 'Home & Garden', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
+      { id: '4', name: 'Professional Fitness Equipment', category: 'Sports', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
+      { id: '5', name: 'Premium Skincare Kit', category: 'Beauty', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
+      { id: '6', name: 'Educational Book Series', category: 'Books', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
+      { id: '7', name: 'Smart Toy Collection', category: 'Toys', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
+      { id: '8', name: 'Kitchen Appliance Set', category: 'Kitchen', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true }
+    ];
+
+    const savedProducts = localStorage.getItem('trustcart-products');
+    const savedConfig = localStorage.getItem('trustcart-config');
+    const savedBundles = localStorage.getItem('trustcart-bundles');
+
+    if (savedProducts) {
+      setProducts(JSON.parse(savedProducts));
+    } else {
+      setProducts(defaultProducts);
+    }
+
+    if (savedConfig) {
+      setConfig(JSON.parse(savedConfig));
+    }
+
+    if (savedBundles) {
+      setBundles(JSON.parse(savedBundles));
+    }
+  }, []);
+
+  // Auto-save to localStorage
+  useEffect(() => {
+    localStorage.setItem('trustcart-products', JSON.stringify(products));
+  }, [products]);
+
+  useEffect(() => {
+    localStorage.setItem('trustcart-config', JSON.stringify(config));
+  }, [config]);
+
+  useEffect(() => {
+    localStorage.setItem('trustcart-bundles', JSON.stringify(bundles));
+  }, [bundles]);
+
+  const calculatePrice = (costPrice: number): { sellingPrice: number; netProfit: number; profitMargin: number } => {
+    if (costPrice === 0) {
+      return { sellingPrice: 0, netProfit: 0, profitMargin: 0 };
+    }
+
+    const basePrice = costPrice + (costPrice * config.profitMargin / 100) + config.adCost + config.deliveryCost;
+    const priceWithTax = basePrice + (basePrice * config.taxRate / 100);
+    const sellingPrice = Math.round(priceWithTax / (1 - config.gatewayFee / 100));
+
+    const netProfit = sellingPrice - costPrice - config.adCost - config.deliveryCost -
+                      (sellingPrice * config.taxRate / 100) - (sellingPrice * config.gatewayFee / 100);
+
+    const profitMargin = (netProfit / sellingPrice) * 100;
+
+    return { sellingPrice, netProfit, profitMargin };
+  };
+
+  const calculateMetrics = () => {
+    const activeProducts = products.filter(p => p.isActive);
+    let totalInvestment = 0;
+    let totalRevenue = 0;
+    let totalProfit = 0;
+
+    activeProducts.forEach(product => {
+      const sellingPrice = product.sellingPrice || calculatePrice(product.costPrice).sellingPrice;
+      const netProfit = sellingPrice - product.costPrice - config.adCost - config.deliveryCost -
+                        (sellingPrice * config.taxRate / 100) - (sellingPrice * config.gatewayFee / 100);
+
+      totalInvestment += product.costPrice * product.quantity;
+      totalRevenue += sellingPrice * product.quantity;
+      totalProfit += netProfit * product.quantity;
+    });
+
+    const roi = totalInvestment > 0 ? (totalProfit / totalInvestment) * 100 : 0;
+    const avgProfit = activeProducts.length > 0 ? totalProfit / activeProducts.length : 0;
+    const profitMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
+
+    setMetrics({
+      totalInvestment,
+      totalRevenue,
+      totalProfit,
+      roi,
+      avgProfit,
+      profitMargin,
+      productCount: activeProducts.length
+    });
+  };
+
+  useEffect(() => {
+    calculateMetrics();
+  }, [products, config]);
+
+  const updateProduct = (id: string, updates: Partial<Product>) => {
+    setProducts(products.map(p => p.id === id ? { ...p, ...updates } : p));
+  };
+
+  const applyPricingToAllProducts = () => {
+    const updatedProducts = products.map(product => {
+      if (product.costPrice > 0) {
+        const pricing = calculatePrice(product.costPrice);
+        return {
+          ...product,
+          sellingPrice: pricing.sellingPrice
+        };
+      }
+      return product;
+    });
+    setProducts(updatedProducts);
+  };
+
+  const createBundle = (bundle: BundleOffer) => {
+    setBundles([...bundles, bundle]);
+  };
+
   // Show loading screen while checking authentication
   if (authLoading) {
     return (
@@ -75,127 +194,6 @@ function App() {
       />
     );
   }
-
-  // Initialize default products
-  useEffect(() => {
-    const defaultProducts: Product[] = [
-      { id: '1', name: 'Premium Smartphone', category: 'Electronics', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
-      { id: '2', name: 'Designer Dress', category: 'Fashion', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
-      { id: '3', name: 'Luxury Furniture Set', category: 'Home & Garden', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
-      { id: '4', name: 'Professional Fitness Equipment', category: 'Sports', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
-      { id: '5', name: 'Premium Skincare Kit', category: 'Beauty', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
-      { id: '6', name: 'Educational Book Series', category: 'Books', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
-      { id: '7', name: 'Smart Toy Collection', category: 'Toys', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
-      { id: '8', name: 'Kitchen Appliance Set', category: 'Kitchen', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true }
-    ];
-    
-    const savedProducts = localStorage.getItem('trustcart-products');
-    const savedConfig = localStorage.getItem('trustcart-config');
-    const savedBundles = localStorage.getItem('trustcart-bundles');
-    
-    if (savedProducts) {
-      setProducts(JSON.parse(savedProducts));
-    } else {
-      setProducts(defaultProducts);
-    }
-    
-    if (savedConfig) {
-      setConfig(JSON.parse(savedConfig));
-    }
-    
-    if (savedBundles) {
-      setBundles(JSON.parse(savedBundles));
-    }
-  }, []);
-
-  // Auto-save to localStorage
-  useEffect(() => {
-    localStorage.setItem('trustcart-products', JSON.stringify(products));
-  }, [products]);
-
-  useEffect(() => {
-    localStorage.setItem('trustcart-config', JSON.stringify(config));
-  }, [config]);
-
-  useEffect(() => {
-    localStorage.setItem('trustcart-bundles', JSON.stringify(bundles));
-  }, [bundles]);
-
-  // Calculate metrics whenever products or config changes
-  useEffect(() => {
-    calculateMetrics();
-  }, [products, config]);
-
-  const calculatePrice = (costPrice: number): { sellingPrice: number; netProfit: number; profitMargin: number } => {
-    if (costPrice === 0) {
-      return { sellingPrice: 0, netProfit: 0, profitMargin: 0 };
-    }
-    
-    const basePrice = costPrice + (costPrice * config.profitMargin / 100) + config.adCost + config.deliveryCost;
-    const priceWithTax = basePrice + (basePrice * config.taxRate / 100);
-    const sellingPrice = Math.round(priceWithTax / (1 - config.gatewayFee / 100));
-    
-    const netProfit = sellingPrice - costPrice - config.adCost - config.deliveryCost - 
-                      (sellingPrice * config.taxRate / 100) - (sellingPrice * config.gatewayFee / 100);
-    
-    const profitMargin = (netProfit / sellingPrice) * 100;
-    
-    return { sellingPrice, netProfit, profitMargin };
-  };
-
-  const calculateMetrics = () => {
-    const activeProducts = products.filter(p => p.isActive);
-    let totalInvestment = 0;
-    let totalRevenue = 0;
-    let totalProfit = 0;
-
-    activeProducts.forEach(product => {
-      // Use manual selling price if set, otherwise calculate
-      const sellingPrice = product.sellingPrice || calculatePrice(product.costPrice).sellingPrice;
-      const netProfit = sellingPrice - product.costPrice - config.adCost - config.deliveryCost - 
-                        (sellingPrice * config.taxRate / 100) - (sellingPrice * config.gatewayFee / 100);
-      
-      totalInvestment += product.costPrice * product.quantity;
-      totalRevenue += sellingPrice * product.quantity;
-      totalProfit += netProfit * product.quantity;
-    });
-
-    const roi = totalInvestment > 0 ? (totalProfit / totalInvestment) * 100 : 0;
-    const avgProfit = activeProducts.length > 0 ? totalProfit / activeProducts.length : 0;
-    const profitMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
-
-    setMetrics({
-      totalInvestment,
-      totalRevenue,
-      totalProfit,
-      roi,
-      avgProfit,
-      profitMargin,
-      productCount: activeProducts.length
-    });
-  };
-
-  const updateProduct = (id: string, updates: Partial<Product>) => {
-    setProducts(products.map(p => p.id === id ? { ...p, ...updates } : p));
-  };
-
-  const applyPricingToAllProducts = () => {
-    const updatedProducts = products.map(product => {
-      if (product.costPrice > 0) {
-        const pricing = calculatePrice(product.costPrice);
-        return {
-          ...product,
-          sellingPrice: pricing.sellingPrice
-        };
-      }
-      return product;
-    });
-    setProducts(updatedProducts);
-  };
-
-  const createBundle = (bundle: BundleOffer) => {
-    setBundles([...bundles, bundle]);
-  };
 
   const tabs = [
     { id: 'products' as const, label: 'Products', icon: Package },
