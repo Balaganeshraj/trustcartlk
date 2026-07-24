@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, Download, FileSpreadsheet, FileText, CheckCircle, AlertCircle, BarChart3, TrendingUp, Package, AlertTriangle, Info } from 'lucide-react';
+import { Upload, Download, FileSpreadsheet, FileText, CheckCircle, AlertCircle, BarChart3, TrendingUp, AlertTriangle, Info } from 'lucide-react';
 import { Product, PricingConfig, BundleOffer } from '../types';
 import { CSVProcessor, ProcessingResult, AnalysisReport, ValidationError } from '../utils/csvProcessor';
 

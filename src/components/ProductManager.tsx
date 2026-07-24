@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Plus, Upload, Download, X, Package, DollarSign, Hash, Tag, RefreshCw, Trash2, Edit3, Save, Search, Filter } from 'lucide-react';
+import { Plus, Upload, Download, X, Package, RefreshCw, Trash2, CreditCard as Edit3, Search, Filter } from 'lucide-react';
 import { Product, PricingConfig, PriceCalculation } from '../types';
-import { detectProductCategory, getCategorySuggestions } from '../utils/categoryDetection';
+import { detectProductCategory } from '../utils/categoryDetection';
+import { supabase } from '../lib/supabase';
 
 interface ProductManagerProps {
   products: Product[];
@@ -18,7 +19,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
 }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<string | null>(null);
+  const [, setEditingProduct] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [formData, setFormData] = useState({
@@ -39,9 +40,16 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleReset = () => {
-    setProducts([]);
-    setShowResetConfirm(false);
-    localStorage.removeItem('trustcart-products');
+    // Delete all rows from Supabase for this user, then clear locally
+    (async () => {
+      const realIds = products.filter((p) => !p.id.startsWith('demo-')).map((p) => p.id);
+      if (realIds.length > 0) {
+        const { error } = await supabase.from('products').delete().in('id', realIds);
+        if (error) console.error('reset delete error:', error.message);
+      }
+      setProducts([]);
+      setShowResetConfirm(false);
+    })();
   };
 
   // Auto-detect category when product name changes
@@ -91,7 +99,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
     const quantity = parseInt(formData.quantity) || 1;
 
     const newProduct: Product = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       name: formData.name,
       category: formData.category,
       costPrice,
@@ -132,13 +140,19 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
   const deleteProduct = (id: string) => {
     if (confirm('Are you sure you want to delete this product?')) {
       setProducts(products.filter(p => p.id !== id));
+      // Sync delete to Supabase (ignore demo ids)
+      if (!id.startsWith('demo-')) {
+        supabase.from('products').delete().eq('id', id).then(({ error }) => {
+          if (error) console.error('delete error:', error.message);
+        });
+      }
     }
   };
 
   const duplicateProduct = (product: Product) => {
     const newProduct = {
       ...product,
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       name: `${product.name} (Copy)`,
       lastUpdated: new Date()
     };
@@ -239,7 +253,7 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
         const supplier = supplierIndex >= 0 ? values[supplierIndex] : '';
 
         newProducts.push({
-          id: `${Date.now()}-${i}`,
+          id: `${crypto.randomUUID()}-${i}`,
           name,
           category,
           costPrice,
@@ -311,15 +325,6 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
               <button
                 onClick={() => setShowResetConfirm(true)}
                 className="flex items-center space-x-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
-              >
-                <RefreshCw className="w-4 h-4" />
-                <span>Reset All</span>
-              </button>
-            )}
-            {products.length > 0 && (
-              <button
-                onClick={() => setShowResetConfirm(true)}
-                className="flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
               >
                 <RefreshCw className="w-4 h-4" />
                 <span>Reset All</span>

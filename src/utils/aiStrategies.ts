@@ -1,4 +1,4 @@
-import { ecommerceCategories } from './categoryDetection';
+
 
 export const categoryBundleConfig = {
   'Electronics': {
@@ -219,7 +219,7 @@ export const generatePsychologicalPrice = (basePrice: number): number => {
 };
 
 export const generateAIRecommendations = (products: any[], config: any) => {
-  const recommendations = [];
+  const recommendations: any[] = [];
   
   // Pricing Strategy Recommendations
   products.forEach(product => {
@@ -251,17 +251,17 @@ export const generateAIRecommendations = (products: any[], config: any) => {
   });
   
   // Bundle Recommendations
-  const categoryGroups = products.reduce((groups, product) => {
+  const categoryGroups = products.reduce((groups: Record<string, any[]>, product) => {
     if (!groups[product.category]) groups[product.category] = [];
     groups[product.category].push(product);
     return groups;
-  }, {});
+  }, {} as Record<string, any[]>);
   
   Object.entries(categoryGroups).forEach(([category, categoryProducts]: [string, any[]]) => {
-    if (categoryProducts.length >= 2 && categoryBundleConfig[category]) {
+    if (categoryProducts.length >= 2 && (categoryBundleConfig as Record<string, any>)[category]) {
       recommendations.push({
         type: 'bundle',
-        title: `${categoryBundleConfig[category].name} Opportunity`,
+        title: `${(categoryBundleConfig as Record<string, any>)[category].name} Opportunity`,
         description: `Create a bundle with ${categoryProducts.length} ${category} products for increased sales`,
         impact: 'high',
         action: 'Create bundle offer',
@@ -274,20 +274,20 @@ export const generateAIRecommendations = (products: any[], config: any) => {
 };
 
 export const generateAutoBundles = (products: any[]) => {
-  const bundles = [];
+  const bundles: any[] = [];
   
   // Group products by category
-  const categoryGroups = products.reduce((groups, product) => {
+  const categoryGroups = products.reduce((groups: Record<string, any[]>, product) => {
     if (product.isActive && product.costPrice > 0 && product.sellingPrice > 0) {
       if (!groups[product.category]) groups[product.category] = [];
       groups[product.category].push(product);
     }
     return groups;
-  }, {});
+  }, {} as Record<string, any[]>);
   
   // Generate bundles for each category
   Object.entries(categoryGroups).forEach(([category, categoryProducts]: [string, any[]]) => {
-    const config = categoryBundleConfig[category];
+    const config = (categoryBundleConfig as Record<string, any>)[category];
     if (!config || categoryProducts.length < 2) return;
     
     // Sort by price and create bundle
@@ -299,7 +299,7 @@ export const generateAutoBundles = (products: any[]) => {
     const bundlePrice = Math.round(originalPrice * (1 - discount / 100));
     
     bundles.push({
-      id: `bundle_${category.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}`,
+      id: crypto.randomUUID(),
       name: config.name,
       category,
       products: bundleProducts,
@@ -352,6 +352,6 @@ export const generateLoyaltyDiscount = (customerTier: string, basePrice: number)
     'platinum': 0.2  // 20%
   };
   
-  const discount = discounts[customerTier] || 0;
+  const discount = (discounts as Record<string, number>)[customerTier] || 0;
   return basePrice * (1 - discount);
 };

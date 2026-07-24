@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Gift, Package, TrendingUp, Edit3, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Gift, Package, CreditCard as Edit3, Trash2, Eye, EyeOff } from 'lucide-react';
 import { BundleOffer, Product, PricingConfig } from '../types';
+import { supabase } from '../lib/supabase';
 
 interface BundleManagerProps {
   bundles: BundleOffer[];
@@ -12,7 +13,6 @@ interface BundleManagerProps {
 export const BundleManager: React.FC<BundleManagerProps> = ({
   bundles,
   setBundles,
-  products,
   config
 }) => {
   const [editingBundle, setEditingBundle] = useState<string | null>(null);
@@ -24,13 +24,16 @@ export const BundleManager: React.FC<BundleManagerProps> = ({
   const deleteBundle = (id: string) => {
     if (confirm('Are you sure you want to delete this bundle?')) {
       setBundles(bundles.filter(b => b.id !== id));
+      supabase.from('bundles').delete().eq('id', id).then(({ error }) => {
+        if (error) console.error('bundle delete error:', error.message);
+      });
     }
   };
 
   const duplicateBundle = (bundle: BundleOffer) => {
     const newBundle = {
       ...bundle,
-      id: `bundle_${Date.now()}`,
+      id: crypto.randomUUID(),
       name: `${bundle.name} (Copy)`
     };
     setBundles([...bundles, newBundle]);

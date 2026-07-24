@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { TrendingUp, DollarSign, Package, Target, BarChart3, PieChart } from 'lucide-react';
+import { TrendingUp, DollarSign, Target, BarChart3, PieChart } from 'lucide-react';
 import { DashboardMetrics, Product, PricingConfig, CategoryStats, PriceCalculation } from '../types';
 
 interface DashboardProps {
@@ -241,7 +241,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {categoryStats.map((category, index) => (
+              {categoryStats.map((category) => (
                 <tr key={category.category} className="hover:bg-orange-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="text-sm font-medium text-black">{category.category}</span>

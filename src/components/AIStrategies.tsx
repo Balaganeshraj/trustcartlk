@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Brain, TrendingUp, Package, Target, Zap, Gift, Users, Calendar, CheckCircle, Lightbulb, DollarSign, BarChart3, Sparkles } from 'lucide-react';
+import { Brain, TrendingUp, Package, Target, Gift, Users, Calendar, CheckCircle, Lightbulb, DollarSign, Sparkles } from 'lucide-react';
 import { Product, PricingConfig, AIRecommendation, BundleOffer } from '../types';
-import { generateAIRecommendations, generateAutoBundles, generatePsychologicalPrice, categoryBundleConfig } from '../utils/aiStrategies';
+import { generateAIRecommendations, generateAutoBundles, generatePsychologicalPrice } from '../utils/aiStrategies';
 
 interface AIStrategiesProps {
   products: Product[];
@@ -21,7 +21,7 @@ export const AIStrategies: React.FC<AIStrategiesProps> = ({
   const [appliedRecommendations, setAppliedRecommendations] = useState<Set<number>>(new Set());
   const [priceOptimizations, setPriceOptimizations] = useState<any[]>([]);
   const [businessIdeas, setBusinessIdeas] = useState<string[]>([]);
-  const [activeStrategies, setActiveStrategies] = useState({
+  const [activeStrategies, setActiveStrategies] = useState<Record<string, boolean>>({
     psychological: true,
     bundles: true,
     dynamic: false,
@@ -52,7 +52,7 @@ export const AIStrategies: React.FC<AIStrategiesProps> = ({
       const marketPrice = product.marketPrice || 0;
       
       // AI suggestions based on market analysis
-      const suggestions = [];
+      const suggestions: { type: string; suggestedPrice: number; reason: string; impact: string; potentialIncrease: string }[] = [];
       
       // Competitive pricing
       if (marketPrice > 0) {
@@ -294,7 +294,7 @@ export const AIStrategies: React.FC<AIStrategiesProps> = ({
                 </div>
                 
                 <div className="space-y-2">
-                  {opt.suggestions.map((suggestion, idx) => (
+                  {opt.suggestions.map((suggestion: { type: string; suggestedPrice: number; reason: string; impact: string; potentialIncrease: string }, idx: number) => (
                     <div key={idx} className="bg-orange-50 border border-orange-200 rounded-lg p-3">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
