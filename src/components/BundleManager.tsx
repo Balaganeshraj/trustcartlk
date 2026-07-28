@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Gift, Package, CreditCard as Edit3, Trash2, Eye, EyeOff } from 'lucide-react';
 import { BundleOffer, Product, PricingConfig } from '../types';
-import { supabase } from '../lib/supabase';
 
 interface BundleManagerProps {
   bundles: BundleOffer[];
@@ -24,9 +23,6 @@ export const BundleManager: React.FC<BundleManagerProps> = ({
   const deleteBundle = (id: string) => {
     if (confirm('Are you sure you want to delete this bundle?')) {
       setBundles(bundles.filter(b => b.id !== id));
-      supabase.from('bundles').delete().eq('id', id).then(({ error }) => {
-        if (error) console.error('bundle delete error:', error.message);
-      });
     }
   };
 

@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Plus, Upload, Download, X, Package, RefreshCw, Trash2, CreditCard as Edit3, Search, Filter } from 'lucide-react';
 import { Product, PricingConfig, PriceCalculation } from '../types';
 import { detectProductCategory } from '../utils/categoryDetection';
-import { supabase } from '../lib/supabase';
 
 interface ProductManagerProps {
   products: Product[];
@@ -40,16 +39,8 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleReset = () => {
-    // Delete all rows from Supabase for this user, then clear locally
-    (async () => {
-      const realIds = products.filter((p) => !p.id.startsWith('demo-')).map((p) => p.id);
-      if (realIds.length > 0) {
-        const { error } = await supabase.from('products').delete().in('id', realIds);
-        if (error) console.error('reset delete error:', error.message);
-      }
-      setProducts([]);
-      setShowResetConfirm(false);
-    })();
+    setProducts([]);
+    setShowResetConfirm(false);
   };
 
   // Auto-detect category when product name changes
@@ -140,12 +131,6 @@ export const ProductManager: React.FC<ProductManagerProps> = ({
   const deleteProduct = (id: string) => {
     if (confirm('Are you sure you want to delete this product?')) {
       setProducts(products.filter(p => p.id !== id));
-      // Sync delete to Supabase (ignore demo ids)
-      if (!id.startsWith('demo-')) {
-        supabase.from('products').delete().eq('id', id).then(({ error }) => {
-          if (error) console.error('delete error:', error.message);
-        });
-      }
     }
   };
 

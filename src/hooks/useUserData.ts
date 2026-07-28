@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { supabase, ProductRow, BundleRow, PricingConfigRow } from '../lib/supabase';
 import { Product, BundleOffer, PricingConfig } from '../types';
+
+const STORAGE_KEYS = {
+  products: 'trustcart_products',
+  bundles: 'trustcart_bundles',
+  config: 'trustcart_config',
+};
 
 const DEFAULT_CONFIG: PricingConfig = {
   profitMargin: 30,
@@ -22,97 +27,58 @@ const DEMO_PRODUCTS: Product[] = [
   { id: 'demo-8', name: 'Kitchen Appliance Set', category: 'Kitchen', costPrice: 0, sellingPrice: 0, quantity: 1, isActive: true },
 ];
 
-const rowToProduct = (r: ProductRow): Product => ({
-  id: r.id,
-  name: r.name,
-  category: r.category,
-  costPrice: Number(r.cost_price) || 0,
-  sellingPrice: r.selling_price != null ? Number(r.selling_price) : undefined,
-  marketPrice: r.market_price != null ? Number(r.market_price) : undefined,
-  quantity: Number(r.quantity) || 1,
-  isActive: r.is_active ?? true,
-  description: r.description ?? undefined,
-  sku: r.sku ?? undefined,
-  supplier: r.supplier ?? undefined,
-  lastUpdated: r.last_updated ? new Date(r.last_updated) : undefined,
-});
+function loadFromStorage<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
 
-const rowToBundle = (r: BundleRow): BundleOffer => ({
-  id: r.id,
-  name: r.name,
-  category: r.category,
-  products: (r.product_snapshot || []).map((p: any) => ({
-    id: p.id,
-    name: p.name,
-    category: p.category,
-    costPrice: Number(p.costPrice) || 0,
-    sellingPrice: p.sellingPrice != null ? Number(p.sellingPrice) : undefined,
-    quantity: p.quantity || 1,
-    isActive: true,
-  })),
-  bundlePrice: Number(r.bundle_price) || 0,
-  originalPrice: Number(r.original_price) || 0,
-  discount: Number(r.discount) || 0,
-  color: r.color || '#F97316',
-  isActive: r.is_active ?? true,
-});
+function saveToStorage<T>(key: string, value: T) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    console.error('localStorage save error:', e);
+  }
+}
 
-const rowToConfig = (r: PricingConfigRow): PricingConfig => ({
-  profitMargin: Number(r.profit_margin) || 0,
-  adCost: Number(r.ad_cost) || 0,
-  deliveryCost: Number(r.delivery_cost) || 0,
-  taxRate: Number(r.tax_rate) || 0,
-  gatewayFee: Number(r.gateway_fee) || 0,
-  currency: r.currency || 'LKR',
-});
+export function useUserData() {
+  const [products, setProductsState] = useState<Product[]>(() => {
+    const stored = loadFromStorage<Product[]>(STORAGE_KEYS.products, []);
+    return stored.length > 0 ? stored : DEMO_PRODUCTS;
+  });
+  const [bundles, setBundlesState] = useState<BundleOffer[]>(() =>
+    loadFromStorage<BundleOffer[]>(STORAGE_KEYS.bundles, [])
+  );
+  const [config, setConfigState] = useState<PricingConfig>(() =>
+    loadFromStorage<PricingConfig>(STORAGE_KEYS.config, DEFAULT_CONFIG)
+  );
+  const [loading, setLoading] = useState(false);
+  const skipSave = useRef(false);
 
-export function useUserData(userId: string | undefined) {
-  const [products, setProductsState] = useState<Product[]>(DEMO_PRODUCTS);
-  const [bundles, setBundlesState] = useState<BundleOffer[]>([]);
-  const [config, setConfigState] = useState<PricingConfig>(DEFAULT_CONFIG);
-  const [loading, setLoading] = useState(true);
-  const skipSave = useRef(true);
-
-  // Load all user data on mount / user change
+  // Persist products to localStorage (debounced)
   useEffect(() => {
-    if (!userId) {
-      setProductsState(DEMO_PRODUCTS);
-      setBundlesState([]);
-      setConfigState(DEFAULT_CONFIG);
-      setLoading(false);
-      skipSave.current = true;
-      return;
-    }
+    if (skipSave.current) return;
+    const t = setTimeout(() => saveToStorage(STORAGE_KEYS.products, products), 400);
+    return () => clearTimeout(t);
+  }, [products]);
 
-    let cancelled = false;
-    skipSave.current = true;
-    setLoading(true);
+  // Persist bundles to localStorage (debounced)
+  useEffect(() => {
+    if (skipSave.current) return;
+    const t = setTimeout(() => saveToStorage(STORAGE_KEYS.bundles, bundles), 400);
+    return () => clearTimeout(t);
+  }, [bundles]);
 
-    (async () => {
-      const [prodRes, bundleRes, cfgRes] = await Promise.all([
-        supabase.from('products').select('*').order('created_at', { ascending: true }),
-        supabase.from('bundles').select('*').order('created_at', { ascending: true }),
-        supabase.from('pricing_config').select('*').maybeSingle(),
-      ]);
-
-      if (cancelled) return;
-
-      const loadedProducts = (prodRes.data as ProductRow[] | null)?.map(rowToProduct) ?? [];
-      setProductsState(loadedProducts.length > 0 ? loadedProducts : DEMO_PRODUCTS);
-
-      const loadedBundles = (bundleRes.data as BundleRow[] | null)?.map(rowToBundle) ?? [];
-      setBundlesState(loadedBundles);
-
-      if (cfgRes.data) setConfigState(rowToConfig(cfgRes.data as PricingConfigRow));
-      else setConfigState(DEFAULT_CONFIG);
-
-      setLoading(false);
-      // allow saves after initial load completes
-      setTimeout(() => { skipSave.current = false; }, 100);
-    })();
-
-    return () => { cancelled = true; };
-  }, [userId]);
+  // Persist config to localStorage (debounced)
+  useEffect(() => {
+    if (skipSave.current) return;
+    const t = setTimeout(() => saveToStorage(STORAGE_KEYS.config, config), 400);
+    return () => clearTimeout(t);
+  }, [config]);
 
   const setProducts = useCallback((next: Product[] | ((prev: Product[]) => Product[])) => {
     setProductsState((prev) => {
@@ -135,5 +101,16 @@ export function useUserData(userId: string | undefined) {
     });
   }, []);
 
-  return { products, bundles, config, setProducts, setBundles, setConfig, loading, skipSave };
+  const clearAllData = useCallback(() => {
+    skipSave.current = true;
+    setProductsState(DEMO_PRODUCTS);
+    setBundlesState([]);
+    setConfigState(DEFAULT_CONFIG);
+    localStorage.removeItem(STORAGE_KEYS.products);
+    localStorage.removeItem(STORAGE_KEYS.bundles);
+    localStorage.removeItem(STORAGE_KEYS.config);
+    setTimeout(() => { skipSave.current = false; }, 100);
+  }, []);
+
+  return { products, bundles, config, setProducts, setBundles, setConfig, loading, skipSave, clearAllData };
 }

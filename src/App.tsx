@@ -1,24 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
-import { TrendingUp, Package, Settings, BarChart3, Gift, LogOut, Loader2, ChevronDown } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { TrendingUp, Package, Settings, BarChart3, Gift, Loader2 } from 'lucide-react';
 import { ProductManager } from './components/ProductManager';
 import { Dashboard } from './components/Dashboard';
 import { PricingSettings } from './components/PricingSettings';
 import { AdvancedImportExport } from './components/AdvancedImportExport';
 import { AIStrategies } from './components/AIStrategies';
 import { BundleManager } from './components/BundleManager';
-import { AuthPage } from './components/AuthPage';
-import { useAuth } from './context/AuthContext';
 import { useUserData } from './hooks/useUserData';
-import { supabase } from './lib/supabase';
 import { Product, PricingConfig, DashboardMetrics, BundleOffer } from './types';
 
 function App() {
-  const { user, profile, loading, signOut } = useAuth();
-  const { products, bundles, config, setProducts, setBundles, setConfig, loading: dataLoading, skipSave } = useUserData(user?.id);
+  const { products, bundles, config, setProducts, setBundles, setConfig, loading: dataLoading } = useUserData();
   const [activeTab, setActiveTab] = useState<'products' | 'dashboard' | 'ai-strategies' | 'bundles' | 'settings'>('products');
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [signingOut, setSigningOut] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
 
   const [metrics, setMetrics] = useState<DashboardMetrics>({
     totalInvestment: 0,
@@ -91,64 +84,6 @@ function App() {
     setBundles((prev) => [...prev, bundle]);
   };
 
-  // Persist products to Supabase (debounced)
-  useEffect(() => {
-    if (!user || skipSave.current) return;
-    const realProducts = products.filter((p) => !p.id.startsWith('demo-'));
-    if (realProducts.length === 0) return;
-    const t = setTimeout(async () => {
-      const { error } = await supabase.from('products').upsert(
-        realProducts.map((p) => ({ id: p.id, ...productToRow(p) })),
-        { onConflict: 'id' }
-      );
-      if (error) console.error('products save error:', error.message);
-    }, 600);
-    return () => clearTimeout(t);
-  }, [products, user, skipSave]);
-
-  // Persist config to Supabase (debounced)
-  useEffect(() => {
-    if (!user || skipSave.current) return;
-    const t = setTimeout(async () => {
-      const { error } = await supabase.from('pricing_config').upsert(
-        { user_id: user.id, ...configToRow(config) },
-        { onConflict: 'user_id' }
-      );
-      if (error) console.error('config save error:', error.message);
-    }, 600);
-    return () => clearTimeout(t);
-  }, [config, user, skipSave]);
-
-  // Persist bundles to Supabase (debounced)
-  useEffect(() => {
-    if (!user || skipSave.current) return;
-    if (bundles.length === 0) return;
-    const t = setTimeout(async () => {
-      const { error } = await supabase.from('bundles').upsert(
-        bundles.map((b) => ({ id: b.id, ...bundleToRow(b) })),
-        { onConflict: 'id' }
-      );
-      if (error) console.error('bundles save error:', error.message);
-    }, 600);
-    return () => clearTimeout(t);
-  }, [bundles, user, skipSave]);
-
-  // Close menu on outside click
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
-    };
-    if (menuOpen) document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [menuOpen]);
-
-  const handleSignOut = async () => {
-    setSigningOut(true);
-    await signOut();
-    setSigningOut(false);
-    setMenuOpen(false);
-  };
-
   const tabs = [
     { id: 'products' as const, label: 'Products', icon: Package },
     { id: 'dashboard' as const, label: 'Dashboard', icon: BarChart3 },
@@ -157,7 +92,7 @@ function App() {
     { id: 'settings' as const, label: 'Settings', icon: Settings },
   ];
 
-  if (loading || dataLoading) {
+  if (dataLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center space-y-3">
@@ -167,18 +102,6 @@ function App() {
       </div>
     );
   }
-
-  if (!user) {
-    return <AuthPage />;
-  }
-
-  const displayName = profile?.full_name || (user.email ? user.email.split('@')[0] : 'User');
-  const initials = displayName
-    .split(' ')
-    .map((s) => s[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -196,51 +119,11 @@ function App() {
               </div>
             </div>
 
-            <div className="flex items-center space-x-4">
-              <div className="hidden sm:block text-right">
-                <div className="text-sm font-bold text-gray-900">
-                  {config.currency} {Math.round(metrics.totalProfit).toLocaleString()}
-                </div>
-                <div className="text-xs text-gray-500">Total Profit</div>
+            <div className="hidden sm:block text-right">
+              <div className="text-sm font-bold text-gray-900">
+                {config.currency} {Math.round(metrics.totalProfit).toLocaleString()}
               </div>
-
-              {/* User menu */}
-              <div className="relative" ref={menuRef}>
-                <button
-                  onClick={() => setMenuOpen((o) => !o)}
-                  className="flex items-center space-x-2 p-1 pr-2 rounded-full hover:bg-gray-100 transition-colors"
-                >
-                  {profile?.avatar_url ? (
-                    <img src={profile.avatar_url} alt={displayName} className="w-9 h-9 rounded-full object-cover" />
-                  ) : (
-                    <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                      {initials}
-                    </div>
-                  )}
-                  <span className="hidden sm:block text-sm font-medium text-gray-700 max-w-[120px] truncate">{displayName}</span>
-                  <ChevronDown className="w-4 h-4 text-gray-400" />
-                </button>
-
-                {menuOpen && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-100 py-2 origin-top-right">
-                    <div className="px-4 py-3 border-b border-gray-100">
-                      <p className="text-sm font-semibold text-gray-900 truncate">{displayName}</p>
-                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
-                      {profile?.country && (
-                        <p className="text-xs text-gray-400 mt-1">{profile.country}{profile.phone ? ` · ${profile.phone}` : ''}</p>
-                      )}
-                    </div>
-                    <button
-                      onClick={handleSignOut}
-                      disabled={signingOut}
-                      className="w-full flex items-center space-x-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                    >
-                      {signingOut ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogOut className="w-4 h-4" />}
-                      <span>Sign out</span>
-                    </button>
-                  </div>
-                )}
-              </div>
+              <div className="text-xs text-gray-500">Total Profit</div>
             </div>
           </div>
         </div>
@@ -300,48 +183,5 @@ function App() {
     </div>
   );
 }
-
-const productToRow = (p: Product) => ({
-  name: p.name,
-  category: p.category || 'Uncategorized',
-  cost_price: p.costPrice,
-  selling_price: p.sellingPrice ?? null,
-  market_price: p.marketPrice ?? null,
-  quantity: p.quantity,
-  is_active: p.isActive,
-  description: p.description ?? null,
-  sku: p.sku ?? null,
-  supplier: p.supplier ?? null,
-  last_updated: new Date().toISOString(),
-});
-
-const bundleToRow = (b: BundleOffer) => ({
-  name: b.name,
-  category: b.category || 'Uncategorized',
-  bundle_price: b.bundlePrice,
-  original_price: b.originalPrice,
-  discount: b.discount,
-  color: b.color,
-  is_active: b.isActive,
-  product_ids: b.products.map((p) => p.id),
-  product_snapshot: b.products.map((p) => ({
-    id: p.id,
-    name: p.name,
-    category: p.category,
-    costPrice: p.costPrice,
-    sellingPrice: p.sellingPrice,
-    quantity: p.quantity,
-  })),
-});
-
-const configToRow = (c: PricingConfig) => ({
-  profit_margin: c.profitMargin,
-  ad_cost: c.adCost,
-  delivery_cost: c.deliveryCost,
-  tax_rate: c.taxRate,
-  gateway_fee: c.gatewayFee,
-  currency: c.currency,
-  updated_at: new Date().toISOString(),
-});
 
 export default App;
